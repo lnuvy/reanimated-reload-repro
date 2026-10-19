@@ -1,0 +1,28 @@
+diff --git a/node_modules/react-native-reanimated/apple/reanimated/apple/REAModule.mm b/node_modules/react-native-reanimated/apple/reanimated/apple/REAModule.mm
+index 4d667e4..a3cb0eb 100644
+--- a/node_modules/react-native-reanimated/apple/reanimated/apple/REAModule.mm
++++ b/node_modules/react-native-reanimated/apple/reanimated/apple/REAModule.mm
+@@ -253,6 +253,9 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(installTurboModule)
+ 
+   auto reanimatedModuleProxy =
+       reanimated::createReanimatedModule(self, self.bridge, jsCallInvoker, workletsModule, isBridgeless);
++  if (reanimatedModuleProxy == nullptr) {
++    return @NO;
++  }
+ 
+   jsi::Runtime &rnRuntime = *jsiRuntime;
+   WorkletRuntimeCollector::install(rnRuntime);
+diff --git a/node_modules/react-native-reanimated/apple/reanimated/apple/native/NativeProxy.mm b/node_modules/react-native-reanimated/apple/reanimated/apple/native/NativeProxy.mm
+index b1c2504..7a64946 100644
+--- a/node_modules/react-native-reanimated/apple/reanimated/apple/native/NativeProxy.mm
++++ b/node_modules/react-native-reanimated/apple/reanimated/apple/native/NativeProxy.mm
+@@ -69,6 +69,9 @@ std::shared_ptr<ReanimatedModuleProxy> createReanimatedModule(
+   PlatformDepMethodsHolder platformDepMethodsHolder = makePlatformDepMethodsHolder(bridge, nodesManager, reaModule);
+ 
+   const auto workletsModuleProxy = [workletsModule getWorkletsModuleProxy];
++  if (workletsModuleProxy == nullptr) {
++    return nullptr;
++  }
+ 
+   auto reanimatedModuleProxy = std::make_shared<ReanimatedModuleProxy>(
+       workletsModuleProxy, rnRuntime, jsInvoker, platformDepMethodsHolder, isBridgeless, getIsReducedMotion());
